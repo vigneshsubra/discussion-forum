@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from "react-router-dom";
 import BaseCard from "../components/ui/BaseCard";
@@ -39,42 +40,38 @@ import classes from './Discussion.module.css';
 function DiscussionPage() {
   const replyInputref = useRef();
   const location = useLocation();
-  const [discussions, setDiscussions] = useState([]);
+  const [replies, setReplies] = useState([]);
+  const headers = {
+    'Content-Type': 'application/json',
+  }
 
   useEffect(() => {
-    fetch('https://discussion-forum-1aece-default-rtdb.firebaseio.com/discussions.json')
-      .then((response) => {
-        return response.json();
-      })
-      .then(data => {
-        const allDiscussions = [];
-
-        for (const key in data) {
-          const disc = {
-            id: key,
-            ...data[key]
-          };
-          allDiscussions.push(disc);
-        }
-
-        setDiscussions(allDiscussions);
-      })
+   
+    axios.get(`https://discussion-forum-1aece-default-rtdb.firebaseio.com/discussions/${location.state}/replies.json`).then((response) => {
+      setReplies(response)
+    })
   }, []);
 
-  const currentData = discussions.find((discussion) => discussion.id === location.state);
+  const replyHandler = (data) => {
+    const reply = {
+      r : data
+    }
+    axios.put(`https://discussion-forum-1aece-default-rtdb.firebaseio.com/discussions/${location.state}/replies.json`, reply , {headers:headers})
+  }
+
 
   return (
     <div className={classes.outer}>
       <h3> Topic:</h3>
       <BaseCard>
         <div>
-          <h2>{currentData && currentData.topic}</h2>
+          <h2>{}</h2>
         </div>
       </BaseCard>
       <h3>Description:</h3>
       <BaseCard>
         <div>
-          <p>{currentData && currentData.description}</p>
+          <p>{}</p>
         </div>
       </BaseCard>
       <BaseCard>
@@ -83,17 +80,17 @@ function DiscussionPage() {
           <textarea id='reply' rows='5' ref={replyInputref}></textarea>
         </div>
         <div className={classes.actions}>
-          <button>Post</button>
+          <button onClick={()=> replyHandler(replyInputref.current.value)}>Post</button>
         </div>
       </BaseCard>
       <h3>Replies:</h3>
-      {currentData && currentData.replies && currentData.replies.map((rep) => (
+      {/* {currentData && currentData.replies && currentData.replies.map((rep) => (
         <BaseCard>
           <div>
             {rep}
           </div>
         </BaseCard>
-      ))}
+      ))} */}
     </div>
   );
 }

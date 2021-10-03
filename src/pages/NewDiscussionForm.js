@@ -7,7 +7,7 @@ function NewDiscussionForm(props) {
   const descriptionInputRef = useRef();
 
   function submitHandler(event){
-    console.log('here');
+    // console.log('here');
     event.preventDefault();
 
     const enteredTopic = topicInputRef.current.value;
