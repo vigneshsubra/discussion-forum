@@ -40,38 +40,37 @@ import classes from './Discussion.module.css';
 function DiscussionPage() {
   const replyInputref = useRef();
   const location = useLocation();
-  const [replies, setReplies] = useState([]);
+  const [discussion, setDiscussion] = useState({});
   const headers = {
     'Content-Type': 'application/json',
   }
 
   useEffect(() => {
-   
-    axios.get(`https://discussion-forum-1aece-default-rtdb.firebaseio.com/discussions/${location.state}/replies.json`).then((response) => {
-      setReplies(response)
+
+    axios.get(`https://discussion-forum-1aece-default-rtdb.firebaseio.com/discussions/${location.state}.json`).then((response) => {
+      setDiscussion(response);
     })
   }, []);
 
   const replyHandler = (data) => {
     const reply = {
-      r : data
+      r: data
     }
-    axios.put(`https://discussion-forum-1aece-default-rtdb.firebaseio.com/discussions/${location.state}/replies.json`, reply , {headers:headers})
+    axios.put(`https://discussion-forum-1aece-default-rtdb.firebaseio.com/discussions/${location.state}/replies.json`, reply, { headers: headers })
   }
-
 
   return (
     <div className={classes.outer}>
       <h3> Topic:</h3>
       <BaseCard>
         <div>
-          <h2>{}</h2>
+          <h2>{discussion.data.topic}</h2>
         </div>
       </BaseCard>
       <h3>Description:</h3>
       <BaseCard>
         <div>
-          <p>{}</p>
+          <p>{discussion.data.description}</p>
         </div>
       </BaseCard>
       <BaseCard>
@@ -80,7 +79,7 @@ function DiscussionPage() {
           <textarea id='reply' rows='5' ref={replyInputref}></textarea>
         </div>
         <div className={classes.actions}>
-          <button onClick={()=> replyHandler(replyInputref.current.value)}>Post</button>
+          <button onClick={() => replyHandler(replyInputref.current.value)}>Post</button>
         </div>
       </BaseCard>
       <h3>Replies:</h3>
