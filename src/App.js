@@ -17,7 +17,7 @@ function App() {
           <Route path='/new-discussion' exact>
             <NewDiscussionPage />
           </Route>
-          <Route path='/discussion-page' component={DiscussionPage}/>
+          <Route path='/discussion-page/:id' component={DiscussionPage}/>
         </Switch>
       </Layouts>
     </div>

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import BaseCard from "../components/ui/BaseCard";
 import classes from './Discussion.module.css';
 
@@ -39,24 +39,26 @@ import classes from './Discussion.module.css';
 
 function DiscussionPage() {
   const replyInputref = useRef();
-  const location = useLocation();
+  const { id } = useParams();
+  // const location = useLocation();
   const [discussion, setDiscussion] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
   const headers = {
     'Content-Type': 'application/json',
   }
 
   useEffect(() => {
-
-    axios.get(`https://discussion-forum-1aece-default-rtdb.firebaseio.com/discussions/${location.state}.json`).then((response) => {
+    axios.get(`https://discussion-forum-1aece-default-rtdb.firebaseio.com/discussions/${id}.json`).then((response) => {
       setDiscussion(response);
+      setIsLoading(false);
     })
-  }, []);
+  }, [id]);
 
   const replyHandler = (data) => {
-    const reply = {
-      r: data
-    }
-    axios.put(`https://discussion-forum-1aece-default-rtdb.firebaseio.com/discussions/${location.state}/replies.json`, reply, { headers: headers })
+    // const reply = {
+    //   r: data
+    // }
+    axios.put(`https://discussion-forum-1aece-default-rtdb.firebaseio.com/discussions/${id}/replies.json`, data, { headers: headers })
   }
 
   return (
@@ -64,13 +66,13 @@ function DiscussionPage() {
       <h3> Topic:</h3>
       <BaseCard>
         <div>
-          <h2>{discussion.data.topic}</h2>
+          {isLoading ? 'Loading... Please wait..' : (<h2>{discussion.data && discussion.data.topic}</h2>)}
         </div>
       </BaseCard>
       <h3>Description:</h3>
       <BaseCard>
         <div>
-          <p>{discussion.data.description}</p>
+        {isLoading ? 'Loading... Please wait..' : (<p>{discussion.data && discussion.data.description}</p>)}  
         </div>
       </BaseCard>
       <BaseCard>

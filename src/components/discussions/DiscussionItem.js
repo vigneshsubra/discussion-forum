@@ -1,18 +1,18 @@
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import BaseCard from '../ui/BaseCard';
 import classes from './DiscussionItem.module.css';
 
 function DiscussionItem(props) {
-  // const history = useHistory();
+  const history = useHistory();
 
   const discussionId = props.id;
 
-  // function openDiscussionHandler(){
-  //   history.push({ 
-  //     pathname: '/discussion-page',
-  //     state: {detail: id}
-  //    });
-  // }
+  function openDiscussionHandler() {
+    history.push({
+      pathname: `/discussion-page/${discussionId}`,
+      // state: discussionId
+    });
+  }
 
   return (
     <BaseCard>
@@ -24,11 +24,11 @@ function DiscussionItem(props) {
           <p>{props.description}</p>
         </div>
         <div className={classes.actions}>
-          {/* <button onClick= {openDiscussionHandler}>Open Discussion</button> */}
-          <Link to={{
+          <button onClick={openDiscussionHandler}>Open Discussion</button>
+          {/* <Link to={{
             pathname: "/discussion-page",
             state: discussionId
-          }}>Open Discussion</Link>
+          }}>Open Discussion</Link> */}
         </div>
       </li>
     </BaseCard>
